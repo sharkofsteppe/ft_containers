@@ -27,11 +27,11 @@ namespace       ft
             typedef typename Allocator::size_type                               size_type;
             typedef typename Allocator::difference_type                         difference_type;
 
-            typedef             ft::TREEit<value_type, difference_type,
-                                pointer, reference>                             iterator;
+            typedef             ft::treeit<value_type, difference_type,
+                                pointer, reference, Compare>                             iterator;
 
-            typedef             ft::TREEit<const value_type, difference_type,
-                                const_pointer, const_reference>                 const_iterator;
+            typedef             ft::treeit<const value_type, difference_type,
+                                const_pointer, const_reference, Compare>                 const_iterator;
 
             typedef reverse_iterator<const_iterator>                            const_reverse_iterator;
             typedef reverse_iterator<iterator>                                  reverse_iterator;

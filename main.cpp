@@ -17,10 +17,11 @@ int main() {
     {
         mappa.insert(ft::make_pair(i, i+33));
     }
-    ft::map<int, char>::iterator it = mappa.begin();
+    ft::pair<int, char> s(1,'c');
+    ft::pair<int, char> d(3,'d');
+    s = d;
 
-    std::cout << it->first << '\n';
-    
+    std::cout<< s.first <<'\n';
    
 
     

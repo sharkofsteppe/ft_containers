@@ -16,6 +16,13 @@ namespace       ft
         {}
         T1 first;
         T2 second;
+
+        pair    &operator=(const pair &other)
+        {
+            this->first = other.first;
+            this->second = other.second;
+            return (*this);
+        }
        
     };
         template<class T1, class T2> inline
@@ -45,5 +52,7 @@ namespace       ft
         template<class T1, class T2> inline
         pair<T1, T2> make_pair(const T1& X, const T2& Y)
         { return (pair<T1, T2>(X, Y)); }
+        
+
 }
 #endif

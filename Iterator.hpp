@@ -94,9 +94,7 @@ namespace ft
         D       operator-(const Myt &Y) const {return (current  - Y.current);};
 
     };
-    // template<class T, class D, class Pt, class Rt> inline
-    // Ptrit<T, D, Pt, Rt>
-    //     operator+(D N, const Ptrit<T, D, Pt, Rt>) {return (Y + N); };
+
 
     template<class RanIt>
     class reverse_iterator : public iterator<
@@ -145,53 +143,34 @@ namespace ft
         D       Mi(const Myt &Y) const {return (Y.current - current);};
     };
 
-
-    template<class T, class D, class Pt, class Rt>
-    class TREEit : public iterator<bidirectional_iterator_tag, T, D, Pt, Rt>
+    template<class T, class D, class Pt, class Rt, class compare>
+    class treeit : public iterator<random_access_iterator_tag, T, D, Pt, Rt>
     {
-        protected:
-        Node<T> *current;
-        public:
+       public:
 
-        typedef TREEit<T, D, Pt, Rt> Myt;
+        treeit(const compare &comps = compare()) : node(), l_node(), comp(comps){};
+        treeit(T * node_p, T * last_node,
+						const compare& comps = compare())
+			:
+				node(node_p),
+				l_node(last_node),
+				comp(comps)
+			{};
+
+        treeit(const treeit &other_it)
+        {
+            this->node = other_it.node;
+            this->l_node = other_it.l_node;
+            this->comp = other_it.comp;
+        }
 
 
-        TREEit(){};
+       T *node;
+       T *l_node;
+       compare comp;
 
-        TREEit(Node<T> *other) : current(other)
-        {}
-
-        // explicit TREEit(Node<T> P) : current(P)
-        // {
-        //     // std::cout << "fdsf\n";
-        // };
-
-        // TREEit(const TREEit<T, D, Pt, Rt> & X) : current(X.base()) {};
-
-
-        // Pt      base() const {return (current);}
-        // Rt      operator*() const {return (*current);}
-        T *operator->() const {return &current->val;}
-        // Myt     &operator++() { ++current; return (*this);}
-        // Myt     operator++(int) { Myt tmp = *this; ++current; return (tmp);}
-        // Myt     &operator--() { --current; return (*this);}
-        // Myt     operator--(int) { Myt tmp = *this; --current; return (tmp);}
-        // bool    operator==(int Y)  const { return (current == (Pt)Y);};
-        // bool    operator==(const Myt &Y) const {return (current == Y.current);};
-        // bool    operator!=(const Myt &Y) const {return (!(current == Y.current));};
-        // Myt     &operator+=(D N) {current += N; return (*this);};
-        // Myt     operator+(D N) const { return (Myt(current + N));};
-        // Myt     &operator-=(D N) { current -= N; return (*this);};
-        // Myt     operator-(D N) const { return (Myt(current - N));};
-        // Rt      operator[](D N) const { return (*(*this + N));};
-        // bool    operator<(const Myt &Y) const {return (current < Y.current);};
-        // bool    operator>(const Myt &Y) const {return (current > Y.current);};
-        // bool    operator<=(const Myt &Y) const {return (!(current < Y.current));};
-        // bool    operator>=(const Myt &Y) const {return (!(current > Y.current));};
-        // D       operator-(const Myt &Y) const {return (current  - Y.current);};
 
     };
-    
 } // namespace ft
 
 

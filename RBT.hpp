@@ -20,10 +20,6 @@ public:
         parent = left = right =  NULL;
         this->color = Red;
     }
-    Node<P> * max( void )	{	return ( right == NULL ) ? this : right->max() ;	}
-	
-	//Returns minimum value in subtree
-	Node<P> * min( void )	{	return ( left == NULL ) ? this : left->min() ;	}
 
     Node<P> *uncle()
     {
