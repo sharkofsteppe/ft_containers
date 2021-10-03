@@ -1,75 +1,42 @@
-#pragma once 
+#ifndef RBT_HPP
+#define RBT_HPP
 #include <memory>
 #include <iostream>
 
 #include <algorithm>
 #include <queue>
+#include "Node.hpp"
+#include "Iterator.hpp"
 
-enum Color {Red, Black};
-
-template<class P>
-class Node
-{
-public:
-    P     val;
-    Color   color;
-    Node<P>    *left, *right, *parent;
-    
-    Node(P val) : val(val)
-    {
-        parent = left = right =  NULL;
-        this->color = Red;
-    }
-
-    Node<P> *uncle()
-    {
-        if (parent == NULL || parent->parent == NULL)
-            return (NULL);
-        if (parent->isOnLeft())
-            return (parent->parent->right);
-        else
-            return (parent->parent->left);
-    }
-    bool isOnLeft() { return (this == parent->left) ;}
-
-    Node<P> *sibling()
-    {
-        if (parent == NULL)
-            return (NULL);
-        if (isOnLeft())
-            return (parent->right);
-        return (parent->left);
-    }
-
-    void moveDown(Node<P> *nParent)
-    {
-        if (parent != NULL)
-        {
-            if (isOnLeft())
-                parent->left = nParent;
-            else
-                parent->right = nParent;
-        }   
-        nParent->parent = parent;
-        parent = nParent;
-    }
-    bool hasRedChild()
-    {
-        return ((left != NULL && left->color == Red) || (right != NULL && right->color == Red));
-    }
-};
-
-template<class pair>
+template< class pair, class Compare >
 class RBT
 {
-    typedef pair P;
+public:
+
+    typedef pair        value_type;
+    typedef Node<value_type>     node;
+    typedef node *      pointer;
+    typedef node &      reference;
+    typedef ptrdiff_t   difference_type;
+    typedef size_t      size_type;
+    typedef Compare     compare;
+    typedef ft::rbtit<node, difference_type, pointer, reference> iterator;
+    // typedef ft::rbt_reverse_it<node, difference_type, pointer, reference> reverse_iterator;
 
 
-    Node<P> *root;
+    node *root;
+    node *nil;
 
-    void rotateLeft(Node<P> *x)
+
+    RBT() 
+    {   
+        nil = new Node<value_type>();
+        root = NULL;
+    }
+
+    void rotateLeft(node *x)
     {
-        Node<P> *nParent = x->right;
+        node *nParent = x->right;
 
         if (x == root)
             root = nParent;
@@ -80,9 +47,9 @@ class RBT
         nParent->left = x;
     }
 
-    void rotateRight(Node<P> *x)
+    void rotateRight(node *x)
     {
-        Node<P> *nParent = x->left;
+        node *nParent = x->left;
         if (x == root)
             root = nParent;
         x->moveDown(nParent);
@@ -93,7 +60,7 @@ class RBT
 
     }
 
-    void swapColors(Node<P> *x1, Node<P> *x2)
+    void swapColors(node *x1, node *x2)
     {
         Color temp;
         temp = x1->color;
@@ -101,72 +68,70 @@ class RBT
         x2->color = temp;
     }
 
-    void swapValues(Node<P> *u, Node<P> *v)
+
+
+
+    void swapValues(node *u, node *v)
     {
-	    P temp;
+	    value_type temp;
 	    temp = u->val;
 	    u->val = v->val;
 	    v->val = temp;
     }
 
-    void fixRed(Node<P> *x) {
-    // if x is root color it Black and return
-    if (x == root) {
-      x->color = Black;
-      return;
-    }
- 
-    // initialize parent, grandparent, uncle
-    Node<P> *parent = x->parent, *grandparent = parent->parent,
-         *uncle = x->uncle();
- 
-    if (parent->color != Black) {
-      if (uncle != NULL && uncle->color == Red) {
-        // uncle Red, perform recoloring and recurse
-        parent->color = Black;
-        uncle->color = Black;
-        grandparent->color = Red;
-        fixRed(grandparent);
-      } else {
-        // Else perform LR, LL, RL, RR
-        if (parent->isOnLeft()) {
-          if (x->isOnLeft()) {
-            // for left right
-            swapColors(parent, grandparent);
-          } else {
-            rotateLeft(parent);
-            swapColors(x, grandparent);
-          }
-          // for left left and left right
-          rotateRight(grandparent);
-        } else {
-          if (x->isOnLeft()) {
-            // for right left
-            rotateRight(parent);
-            swapColors(x, grandparent);
-          } else {
-            swapColors(parent, grandparent);
-          }
- 
-          // for right right and right left
-          rotateLeft(grandparent);
-        }
-      }
-    }
-  }
 
-    Node<P> *successor(Node<P> *x)
+
+    void fixRed(node *x)
     {
-        Node<P> *temp = x;
-
-        while (temp->left != NULL)
+    // if x is root color it Black and return
+        if (x == root)
         {
-            temp = temp->left;
+            x->color = Black;
+            return;
         }
-        return (temp);
+        // initialize parent, grandparent, uncle
+        node *parent = x->parent, *grandparent = parent->parent,
+         *uncle = x->uncle();
+        if (parent->color != Black)
+        {
+            if (uncle != NULL && uncle->color == Red)
+            {
+            // uncle Red, perform recoloring and recurse
+                parent->color = Black;
+                uncle->color = Black;
+                grandparent->color = Red;
+                fixRed(grandparent);
+            }
+            else
+            {
+            // Else perform LR, LL, RL, RR
+                if (parent->isOnLeft())
+                {
+                    if (x->isOnLeft())
+                        swapColors(parent, grandparent);// for left right
+                    else
+                    {
+                        rotateLeft(parent);
+                        swapColors(x, grandparent);
+                    }
+                    rotateRight(grandparent); // for left left and left right
+                }
+                else
+                {
+                    if (x->isOnLeft())
+                    {
+                        rotateRight(parent);// for right left
+                        swapColors(x, grandparent);
+                    }
+                    else
+                        swapColors(parent, grandparent);// for right right and right left
+                    rotateLeft(grandparent);
+                }
+            }
+        }
     }
 
-    Node<P> *BSTreplace(Node<P> *x)
+    node *BSTreplace(node *x)
     {
         if (x->left != NULL && x->right != NULL)
             return (successor(x->right));
@@ -177,23 +142,23 @@ class RBT
         else
             return (x->right);
     }
-    void    deleteNode(Node<P> *v)
+    void    deleteNode(node *v)
     {
-        Node<P> *u = BSTreplace(v);
+        node *u = BSTreplace(v);
 
         bool uvBlack = ((u == NULL || u->color == Black) && (v->color == Black));
-        Node<P> *parent = v->parent;
+        node *parent = v->parent;
         if (u == NULL)/*u is NULL therefore v is leaf*/
         {
             if (v == root)
-               root = NULL;/*v is root, making root null*/
+               root = NULL;/*v is root, making root NULL*/
             else
             {
                 if (uvBlack)/*u and v both Black*/
                     fixDoubleBlack(v);/*v is leaf, fix double Black at v*/
                 else/*u or v is Red*/
                 {
-                    if (v->sibling() != NULL)/*sibling is not null, make it Red"*/
+                    if (v->sibling() != NULL)/*sibling is not NULL, make it Red"*/
                         v->sibling()->color = Red;
                 }
             }
@@ -234,12 +199,16 @@ class RBT
         deleteNode(u);
     }
 
-    void fixDoubleBlack(Node<P> *x)
+
+
+
+
+    void fixDoubleBlack(node *x)
     {
         if (x == root)/* Reached root*/
             return;
  
-        Node<P> *sibling = x->sibling(), *parent = x->parent;
+        node *sibling = x->sibling(), *parent = x->parent;
         if (sibling == NULL)/*No sibiling, double Black pushed up*/
           fixDoubleBlack(parent);
         else
@@ -303,19 +272,22 @@ class RBT
             }
         }
     }
-    void levelOrder(Node<P> *x)
+
+
+
+    void levelOrder(node *x)
     {
-        if (x == NULL)/*return if node<P> is null*/
+        if (x == NULL)/*return if node is NULL*/
             return ;
-        std::queue<Node<P> *> q;/*queue for level order*/
-        Node<P> *curr;
+        std::queue<node *> q;/*queue for level order*/
+        node *curr;
         /*push x*/
         q.push(x);
         while (!q.empty())/*while q is not empty*/
         {
             curr = q.front();
             q.pop();
-            std::cout << curr->val << " ";/*print node<P> value*/
+            std::cout << curr->val << " ";/*print node value*/
         /*push children to queue*/
             if (curr->left != NULL)
                 q.push(curr->left);
@@ -323,7 +295,10 @@ class RBT
                 q.push(curr->right);
         }
     }
-    void inorder(Node<P> *x)
+
+
+
+    void inorder(node *x)
     {
         if (x == NULL)
             return;
@@ -334,34 +309,66 @@ class RBT
 public:
 
 
-    
-    Node<P> * begin( void )
+
+    iterator begin( void ) //    typedef ft::treeit<node , Compare> iterator;
     {
+
         if (root == NULL)
-            return NULL;
-        Node<P> *ret = root;
+        {
+            return iterator(nil);
+        }
+
+        node *ret = root;
         while (ret->left)
+        {
             ret = ret->left;
-        return (ret); 
+        }
+        return (iterator(ret)); 
     }
-	Node<P> * end( void )
+
+	iterator end( void )
     {
         if (root == NULL)
-            return NULL;
-        Node<P> *ret = root;
-        while (ret->right)
-            ret = ret->right;
-        return (ret); 
+            return (iterator(nil));
+        // node *ret = root;
+        
+
+        // while (ret->right != NULL)
+        //     ret = ret->right;
+        // ret = ret->right;
+        return (iterator(nil)); 
     }
+
+    // reverse_iterator    rbegin(void)
+    // {
+    //     if (root == NULL)
+    //         return (reverse_iterator(NULL));
+    //     node *ret = root;
+    //     while (ret->right)
+    //         ret = ret->right;
+    //     ret = ret->right;
+    //     return (reverse_iterator(ret)); 
+    // }
+
+	// reverse_iterator rend( void )
+    // {
+    //     if (root == NULL)
+    //         return (reverse_iterator(NULL));
+    //     node *ret = root;
+    //     while (ret->left)
+    //         ret = ret->left;
+    //     return (reverse_iterator(ret)); 
+    // }
+
 	bool     empty( void ) const		{	return ( root == NULL ) ;	}
 
-    RBT() { root = NULL; }
+
     /*searches for given value*/
-    /*if found returns the node<P> (used for delete)*/
-    /*else returns the last node<P> while traversing (used in insert)*/
-    Node<P> *search(P n)
+    /*if found returns the node (used for delete)*/
+    /*else returns the last node while traversing (used in insert)*/
+    node *search(value_type n)
     {
-        Node<P> *temp = root;
+        node *temp = root;
         while (temp != NULL)
         {
             if (n < temp->val)
@@ -384,50 +391,81 @@ public:
         return temp;
     }
  
+
+                         
+        // std::cout <<std::addressof(NULL) <<  " post new:"<<'\n';
+
+
+
     /*inserts the given value to tree*/
-    void insert(P n)
+    void insert(value_type n)
     {
-        Node<P> *newNode= new Node<P>(n);
-        if (root == NULL)/*when root is null*/
+       
+        
+        node *newNode= new Node<value_type>(n);
+    // std::cout << std::addressof(nil->root)<< "Here\n";
+        
+        if (root == NULL)/*when root is NULL*/
         {
             /*simply insert value at root*/
             newNode->color = Black;
             root = newNode;
+            root->knowroot(&root, &nil);
+            // std::cout << std::addressof(root)<< "Here\n";
+
+            nil->knowroot(&root, &nil);
+            // std::cout << std::addressof(nil->root)<< "Here\n";
+
+
         }
         else
         {
-            Node<P> *temp = search(n);
-            if (temp->val == n)/*return if value already exists*/
+            node *temp = search(n);
+            if (temp->val == n)
+            {
+                delete newNode;/*return if value already exists*/
                 return ;
+            }
       /*if value is not found, search returns the node*/
       /*where the value is to be inserted*/
-      /*connect new node<P> to correct node*/
+      /*connect new node to correct node*/
             newNode->parent = temp;
  
             if (n < temp->val)
+            {
                 temp->left = newNode;
+                newNode->knowroot(&root, &nil);
+
+            }
             else
+            {
                 temp->right = newNode;
+                newNode->knowroot(&root, &nil);
+
+
+            }
             /*fix Red Red voilaton if exists*/
             fixRed(newNode);
         }
     }
  
-  /*utility function that deletes the node<P> with given value*/
-    void deleteByVal(P n)
+  /*utility function that deletes the node with given value*/
+    void deleteByVal(value_type n)
     {
         if (root == NULL)/*Tree is empty*/
             return;
-        Node<P> *v = search(n), *u;
+        node *v = search(n), *u;
         std::cout << "HERE: "<< v->val<< "\n";
         if (v->val != n)
         {
-            std::cout << "No node<P> found to delete with value:" << n << std::endl;
+            std::cout << "No node found to delete with value:" << n << std::endl;
             return;
         }
         deleteNode(v);
     }
  
+
+
   /*prints inorder of the tree*/
     void printInOrder()
     {
@@ -439,6 +477,9 @@ public:
         std::cout << std::endl;
     }
  
+
+
+
   /*prints level order of the tree*/
     void printLevelOrder()
     {
@@ -450,3 +491,4 @@ public:
         std::cout << std::endl;
     }
 };
+#endif

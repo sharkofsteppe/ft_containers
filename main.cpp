@@ -1,27 +1,72 @@
 
 #include "vector.hpp"
 #include "Iterator.hpp"
-#include <iostream>
-#include <vector>
-#include "stack.hpp"
-#include <stack>
 #include "pair.hpp"
 #include "map.hpp"
+#include "stack.hpp"
+
+#include <iostream>
+#include <vector>
+#include <stack>
+
 #include <map>
 
+// namespace ft = std;
+
 int main() {
-
-
+ 
     ft::map<int, char> mappa;
     for (size_t i = 1; i < 19; i++)
     {
         mappa.insert(ft::make_pair(i, i+33));
     }
-    ft::pair<int, char> s(1,'c');
-    ft::pair<int, char> d(3,'d');
-    s = d;
 
-    std::cout<< s.first <<'\n';
+
+    // ft::pair<int, char> s(1,'c');
+    // ft::pair<int, char> d(3,'d');
+    ft::map<int, char>::iterator it = mappa.begin();
+    // ft::map<int, char>::iterator it_b = mappa.begin();
+            //  std::cout << it_b->first <<"begin" <<'\n';
+
+    while (it != mappa.end())
+    {
+
+        std::cout << it->first << '\n';
+        ++it;
+        
+
+        
+    }
+
+    // // }
+    //     std::cout << it->first <<'\n';
+        // it++;
+
+        // std::cout << it->first <<'\n';
+
+
+    // ++it;
+    // std::cout << it->first <<'\n';
+    // it++;
+    // std::cout << it->first <<'\n';
+    // --it;
+    // std::cout << it->first <<'\n';
+
+
+
+
+
+
+
+    // s = d;
+
+
+    // std::cout<< s.first <<'\n';
+    // ft::map<int, char>::iterator it = mappa.begin();
+
+    // std::cout<< *(it). << '\n';
+
+    // std::cout<< it.node->val.first << '\n';
    
 
     

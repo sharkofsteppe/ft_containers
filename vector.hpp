@@ -31,10 +31,10 @@ namespace   ft
             typedef typename    allocator_type::size_type                       size_type;
             typedef             ft::Ptrit<value_type, difference_type,
                                 pointer, reference>                             iterator;
-            typedef             ft::Ptrit<const value_type, difference_type,
+            typedef             ft::Ptrit<value_type, difference_type,
                                 const_pointer, const_reference>                 const_iterator;
             typedef             ft::reverse_iterator<iterator>                  reverse_iterator;
-            typedef             ft::reverse_iterator<const iterator>            const_reverse_iterator;
+            typedef             ft::reverse_iterator<const_iterator>            const_reverse_iterator;
             
 
 

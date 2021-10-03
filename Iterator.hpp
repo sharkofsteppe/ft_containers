@@ -1,7 +1,7 @@
 #ifndef ITERATOR_HPP
 #define ITERATOR_HPP
 
-#include "RBT.hpp"
+#include <iostream>
 #include  <cstddef>
 namespace ft
 {
@@ -62,6 +62,7 @@ namespace ft
     {
         protected:
         Pt current;
+        Pt last;
         public:
 
         typedef Ptrit<T, D, Pt, Rt> Myt;
@@ -69,8 +70,13 @@ namespace ft
 
         Ptrit(){};
         explicit Ptrit(Pt P) : current(P) {};
+
         Ptrit(const Ptrit<T, D, Pt, Rt> & X) : current(X.base()) {};
 
+        operator Ptrit< T,D, const T*, const T&> ()
+        {
+            return (Ptrit<T,D, const T*, const T&>(current));
+        }
 
         Pt      base() const {return (current);}
         Rt      operator*() const {return (*current);}
@@ -139,38 +145,165 @@ namespace ft
         Myt     operator-(D N) const { return (Myt(current + N));};
         Rt      operator[](D N) const { return (*(*this + N));};
         bool    Lt(const Myt &Y) const {return (Y.current < current);};
-       
+
         D       Mi(const Myt &Y) const {return (Y.current - current);};
     };
 
-    template<class T, class D, class Pt, class Rt, class compare>
-    class treeit : public iterator<random_access_iterator_tag, T, D, Pt, Rt>
+    template<class T, class D, class Pt, class Rt>
+    class rbtit : public iterator<bidirectional_iterator_tag, T, D, Pt, Rt>
     {
-       public:
-
-        treeit(const compare &comps = compare()) : node(), l_node(), comp(comps){};
-        treeit(T * node_p, T * last_node,
-						const compare& comps = compare())
-			:
-				node(node_p),
-				l_node(last_node),
-				comp(comps)
-			{};
-
-        treeit(const treeit &other_it)
+        public:
+            Pt current;
+            Pt last;
+            typedef rbtit<T, D, Pt, Rt> Myt;
+            typedef typename T::value_type   * ptpair;
+            typedef typename T::value_type   & refpair;
+        rbtit(){};
+        explicit rbtit(Pt P) : current(P)
         {
-            this->node = other_it.node;
-            this->l_node = other_it.l_node;
-            this->comp = other_it.comp;
+            Pt tmp = (*current->root);
+            tmp = tmp->max();
+            last = tmp;
+        };
+        rbtit(const rbtit<T, D, Pt, Rt> & X) : current(X.base())
+        {
+            Pt tmp = (*current->root);
+            tmp = tmp->max();
+            last = tmp;
+        };
+
+        Myt     operator=(const Myt &other)
+        {
+            current = other.base();
+            return (*this);
         }
 
+        Pt      base() const {return (current);}
 
-       T *node;
-       T *l_node;
-       compare comp;
+        refpair      operator*() const
+        {
+            return (current->val);
+        }
 
+        ptpair      operator->() const
+        {
+            return (&current->val);
+        }
+
+        Myt     operator++()
+        {
+            
+            if(current == last)
+            {
+                
+                current = (*current->nilp);
+                return (*this);
+            }
+            current = current->successor();
+            return (*this);
+        }
+
+        Myt operator++( int )
+        {
+	        Pt  temp = current ;
+		    operator++();
+		    return Myt( temp ) ;
+	    }
+
+        Myt operator--( void )
+        {
+            if (current->nil == 1)
+            {
+                Pt tmp = (*current->root);
+                while (tmp->right != NULL)
+                {
+                    tmp = tmp->right;
+                }
+                    current = tmp;
+                return (*this);
+            }
+		    current = current->predecessor();
+		    return ( *this ) ;
+	    }
+
+
+        Myt operator--( int )
+        {
+            Pt temp = current ;
+            operator--();
+            return Myt( temp ) ;
+        }
+        
+        bool    operator== (const Myt& x) throw() { return this->current == x.current; }
+
+		bool    operator!= (const Myt& x) throw() { return this->current != x.current; }
 
     };
+
+
+    // template<class T, class D, class Pt, class Rt>
+    // class rbt_reverse_it : public iterator<bidirectional_iterator_tag, T, D, Pt, Rt>
+    // {
+    //     public:
+    //         Pt current;
+    //         typedef rbtit<T, D, Pt, Rt> Myt;
+    //         typedef typename T::value_type   * ptpair;
+    //         typedef typename T::value_type   & refpair;
+    //     rbt_reverse_it(){};
+    //     explicit rbt_reverse_it(Pt P) : current(P) {};
+    //     rbt_reverse_it(const rbtit<T, D, Pt, Rt> & X) : current(X.base()) {};
+
+    //     Myt     operator=(const Myt &other)
+    //     {
+    //         current = other.base();
+    //         return (*this);
+    //     }
+
+    //     Pt      base() const {return (current);}
+
+    //     refpair      operator*() const
+    //     {
+    //         return (current->val);
+    //     }
+
+    //     ptpair      operator->() const
+    //     {
+    //         return (&current->val);
+    //     }
+
+    //     Myt     operator++()
+    //     {
+    //         current = current->predecessor();
+    //         return (*this);
+    //     }
+
+    //     Myt operator++( int )
+    //     {
+	// 	    Pt  temp = current ;
+	// 	    operator++();
+	// 	    return Myt( temp ) ;
+	//     }
+
+    //     Myt operator--( void )
+    //     {
+	// 	    current = current->successor() ;
+	// 	    return ( *this ) ;
+	//     }
+
+
+    //     Myt operator--( int )
+    //     {
+    //         Pt temp = current ;
+    //         operator--();
+    //         return Myt( temp ) ;
+    //     }
+        
+    //     bool    operator== (const Myt& x) throw() { return this->current == x.current; }
+
+	// 	bool    operator!= (const Myt& x) throw() { return this->current != x.current; }
+
+    // };
+
 } // namespace ft
 
 
