@@ -1,0 +1,9 @@
+Wednesday.August 18. 
+1. First day of an Acquaintance with containers. 
+
+SUNDAY. AUGUST 22. 
+SECOND DAY.
+WTF.
+WHAT IS ALLOCATOR.
+1. Создать 2класса  итератор.  Для реверса и для рандом аксесс.
+2. Создать класс итератор трит. 
