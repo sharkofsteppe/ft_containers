@@ -33,10 +33,8 @@ namespace       ft
 
 
 
-            // typedef  typename           RBT<value_type, key_compare>::const_iterator                 const_iterator;
-
-            // typedef reverse_iterator<const_iterator>                            const_reverse_iterator;
-            // typedef reverse_iterator<iterator>                                  reverse_iterator;
+            // typedef  typename    RBT<value_type, key_compare>::const_iterator const_iterator;
+            // typedef  reverse_iterator<const_iterator>                                 const_reverse_iterator;
 
             /*----------------------------CONSTRUCTORS----------------------------*/
             // map();
@@ -103,17 +101,18 @@ namespace       ft
                 return ;
             }
 	
-            // iterator insert (iterator position, const value_type& val);
+            iterator insert (iterator position, const value_type& val);
 	
-            // template <class InputIterator>
-            // void insert (InputIterator first, InputIterator last);
+            template <class InputIterator>
+            void insert (InputIterator first, InputIterator last);
 
-            // void erase (iterator position);
+            void erase (iterator position);
 
             // size_type erase (const key_type& k);
 
             // void erase (iterator first, iterator last);
             // void swap (map& x);
+
             void clear();
 
             /*----------------------------OBSERVERS----------------------------*/

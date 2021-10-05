@@ -195,7 +195,6 @@ namespace ft
             
             if(current == last)
             {
-                
                 current = (*current->nilp);
                 return (*this);
             }
@@ -255,13 +254,13 @@ namespace ft
         explicit rbt_reverse_it(Pt P) : current(P)
         {
             Pt tmp = (*current->root);
-            tmp = tmp->max();
+            tmp = tmp->min();
             last = tmp;
         };
         rbt_reverse_it(const rbt_reverse_it<T, D, Pt, Rt> & X) : current(X.base())
         {
             Pt tmp = (*current->root);
-            tmp = tmp->max();
+            tmp = tmp->min();
             last = tmp;
         };
 
@@ -285,14 +284,9 @@ namespace ft
 
         Myt     operator++()
         {
-            if (current->nil == 1)
+            if (current == last)
             {
-                Pt tmp = (*current->root);
-                while (tmp->right != NULL)
-                {
-                    tmp = tmp->right;
-                }
-                    current = tmp;
+                current = (*current->nilp);
                 return (*this);
             }
             current = current->predecessor();
@@ -308,10 +302,13 @@ namespace ft
 
         Myt operator--( void )
         {
-            if(current == last)
+            if(current->nil == 1)
             {
-                
-                current = (*current->nilp);
+                // std::cout << "fsd\n";
+                Pt tmp = (*current->root);
+                tmp = tmp->min();
+                // std::cout << tmp->val.first << '\n';
+                current = tmp;
                 return (*this);
             }
             current = current->successor();

@@ -1,9 +1,9 @@
 
-// #include "vector.hpp"
-// #include "Iterator.hpp"
-// #include "pair.hpp"
-// #include "map.hpp"
-// #include "stack.hpp"
+#include "vector.hpp"
+#include "Iterator.hpp"
+#include "pair.hpp"
+#include "map.hpp"
+#include "stack.hpp"
 
 #include <iostream>
 #include <vector>
@@ -11,12 +11,12 @@
 
 #include <map>
 
-namespace ft = std;
+// namespace ft = std;
 
 int main() {
  
     ft::map<int, char> mappa;
-    for (size_t i = 1; i < 19; i++)
+    for (size_t i = 1; i < 5; i++)
     {
         mappa.insert(ft::make_pair(i, i+33));
     }
@@ -25,17 +25,36 @@ int main() {
     // ft::pair<int, char> s(1,'c');
     // ft::pair<int, char> d(3,'d');
     ft::map<int, char>::reverse_iterator it = mappa.rbegin();
-    // ft::map<int, char>::iterator it_b = mappa.begin();
+    
+        // std::cout << mappa.rend()->first << '\n';
+
+    ft::map<int, char>::reverse_iterator it_b = mappa.rend();
             //  std::cout << it_b->first <<"begin" <<'\n';
 
-    while (it != mappa.rend())
+    while (it_b != it)
     {
+    //     // --it;
 
-        std::cout << it->first << '\n';
-        ++it;
-        // std::cout << it->first << '\n';
+        // --it;
+        // --it;
+        // --it;
+        // --it;
+        // --it;
+
+        std::cout << it_b->first << '\n';
+        --it_b;
+        std::cout << it_b->first << '\n';
+
+        
+
+
+
+
+    //     // std::cout << it->first << '\n';
 
     }
+        // std::cout << it->first << '\n';
+
 
     // // }
     //     std::cout << it->first <<'\n';

@@ -343,21 +343,21 @@ public:
     {
         if (root == NULL)
             return (reverse_iterator(nil));
-        // node *ret = root;
-        // while (ret->right)
-        //     ret = ret->right;
+        node *ret = root;
+        while (ret->right)
+            ret = ret->right;
         // ret = ret->right;
-        return (reverse_iterator(nil)); 
+        return (reverse_iterator(ret)); 
     }
 
 	reverse_iterator rend( void )
     {
         if (root == NULL)
             return (reverse_iterator(nil));
-        node *ret = root;
-        while (ret->left)
-            ret = ret->left;
-        return (reverse_iterator(ret)); 
+        // node *ret = root;
+        // while (ret->left)
+        //     ret = ret->left;
+        return (reverse_iterator(nil)); 
     }
 
 	bool     empty( void ) const		{	return ( root == NULL ) ;	}
