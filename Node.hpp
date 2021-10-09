@@ -19,6 +19,7 @@ public:
     Node<P>    **root;
     Node<P>    **nilp;
     int         nil;
+    int last;
  
     Node(P val) : val(val)
     {
@@ -29,6 +30,7 @@ public:
     {
         nil = 1;
         parent = left = right =  NULL;
+        
         this->color = Black;
     }
 
@@ -40,6 +42,10 @@ public:
         // std::cout << std::addressof(*root)<< "egHere\n";
 
         // std::cout << (*root)->val.first << " what should be\n";
+    }
+    bool    empty ( void ) const
+    {
+        return (*root == NULL);
     }
 
 
@@ -113,7 +119,10 @@ public:
         else
             return (parent->parent->left);
     }
-    bool isOnLeft() { return (this == parent->left) ;}
+    bool isOnLeft()
+    { 
+        return (this == parent->left);
+    }
 
     Node<P> *sibling()
     {

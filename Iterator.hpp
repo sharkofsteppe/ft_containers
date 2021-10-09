@@ -153,23 +153,32 @@ namespace ft
     class rbtit : public iterator<bidirectional_iterator_tag, T, D, Pt, Rt>
     {
         public:
+
             Pt current;
             Pt last;
+
             typedef rbtit<T, D, Pt, Rt> Myt;
             typedef typename T::value_type   * ptpair;
             typedef typename T::value_type   & refpair;
         rbtit(){};
         explicit rbtit(Pt P) : current(P)
         {
-            Pt tmp = (*current->root);
-            tmp = tmp->max();
-            last = tmp;
+
+            if ((*current->root) != NULL)
+            {
+                Pt tmp = (*current->root);
+                tmp = tmp->max();
+                last = tmp;
+            }
         };
         rbtit(const rbtit<T, D, Pt, Rt> & X) : current(X.base())
         {
-            Pt tmp = (*current->root);
-            tmp = tmp->max();
-            last = tmp;
+          
+                Pt tmp = (*current->root);
+                tmp = tmp->max();
+                last = tmp;
+            
+
         };
 
         Myt     operator=(const Myt &other)
@@ -190,12 +199,27 @@ namespace ft
             return (&current->val);
         }
 
-        Myt     operator++()
+        Myt     &operator++( void )
         {
-            
-            if(current == last)
+
+            // if ()
+            // {
+            //     return (*this);
+            // }
+            if (current->nil == 1)
             {
+                return(*this);
+            }
+            if ((*current->root) == NULL)
+            {
+                return(*this);
+
+            }
+            if (current == last)
+            {
+
                 current = (*current->nilp);
+                
                 return (*this);
             }
             current = current->successor();
@@ -209,8 +233,17 @@ namespace ft
 		    return Myt( temp ) ;
 	    }
 
-        Myt operator--( void )
+        Myt &operator--( void )
         {   
+            // std::cout << "HERE WE GO\n";
+
+            if (current->empty())
+            {
+                // std::cout << "sdfhello\n" << std::endl;
+                
+                
+                return (*this);
+            }
             if (current->nil == 1)
             {
                 Pt tmp = (*current->root);
@@ -228,6 +261,120 @@ namespace ft
 
         Myt operator--( int )
         {
+            // std::cout << "sdf\n" << std::endl;
+
+
+            Pt temp = current ;
+            operator--();
+            return Myt( temp ) ;
+        }
+        
+        bool    operator== (const Myt& x) throw() { return this->current == x.current; }
+
+		bool    operator!= (const Myt& x) throw() { return this->current != x.current; }
+
+    };
+
+        template<class T, class D, class Pt, class Rt>
+    class rbt_const_it : public iterator<bidirectional_iterator_tag, T, D, Pt, Rt>
+    {
+        public:
+            Pt current;
+            Pt last;
+            typedef rbt_const_it<T, D, Pt, Rt> Myt;
+            typedef typename T::value_type  const * ptpair;
+            typedef typename T::value_type  const & refpair;
+        rbt_const_it(){};
+        explicit rbt_const_it(Pt P ) : current(P)
+        {
+            if ((*current->root) != NULL)
+            {
+                Pt tmp = (*current->root);
+                tmp = tmp->max();
+                last = tmp;
+            }
+        };
+        rbt_const_it(const rbtit<T, D, Pt, Rt> & X) : current(X.base())
+        {
+            if ((*current->root) != NULL)
+            {
+                Pt tmp = (*current->root);
+                tmp = tmp->max();
+                last = tmp;
+            }
+        };
+
+        Myt     operator=(const Myt &other)
+        {
+            current = other.base();
+            return (*this);
+        }
+
+        Pt      base() const {return (current);}
+
+        refpair      operator*() const
+        {
+            return (current->val);
+        }
+
+        ptpair      operator->() const
+        {
+            return (&current->val);
+        }
+
+        Myt     &operator++( void )
+        {
+
+            if ((*current->root) == NULL)
+            {
+                return(*this);
+            }
+            if(current == last)
+            {
+                current = (*current->nilp);
+                return (*this);
+            }
+            current = current->successor();
+            return (*this);
+        }
+
+        Myt operator++( int )
+        {
+	        Pt  temp = current ;
+		    operator++();
+		    return Myt( temp ) ;
+	    }
+
+        Myt &operator--( void )
+        {   
+
+            if (current->empty())
+            {
+                return (*this);
+            }
+            
+            if (current->nil == 1)
+            {
+                Pt tmp = (*current->root);
+                while (tmp->right != NULL)
+                {
+                    tmp = tmp->right;
+                }
+                    current = last;
+                    
+                return (*this);
+            }
+            // std::cout << current->val.second << '\n';
+		    current = current->predecessor();
+		    return ( *this ) ;
+
+
+	    }
+
+
+        Myt operator--( int )
+        {
+
             Pt temp = current ;
             operator--();
             return Myt( temp ) ;
@@ -253,9 +400,20 @@ namespace ft
         rbt_reverse_it(){};
         explicit rbt_reverse_it(Pt P) : current(P)
         {
-            Pt tmp = (*current->root);
-            tmp = tmp->min();
-            last = tmp;
+            
+
+            if ((*current->root) != NULL)
+            {
+                // std::cout << "1.1) reverse iterators [empty]:" << std::endl;
+
+                Pt tmp = (*current->root);
+
+                tmp = tmp->min();
+                last = tmp;
+            }
+
+                // std::cout << "1.1) reverse iterators [empty]:" << std::endl;
+
         };
         rbt_reverse_it(const rbt_reverse_it<T, D, Pt, Rt> & X) : current(X.base())
         {
@@ -282,8 +440,15 @@ namespace ft
             return (&current->val);
         }
 
-        Myt     operator++()
+        Myt     &operator++()
         {
+            if (current->empty())
+            {
+                // std::cout << "1.1) HERE BRUDDA reverse iterators [empty]:"  << std::endl;
+
+                return (*this);
+
+            }
             if (current == last)
             {
                 current = (*current->nilp);
@@ -300,8 +465,109 @@ namespace ft
 		    return Myt( temp ) ;
 	    }
 
-        Myt operator--( void )
+        Myt &operator--( void )
         {
+            if (current->empty())
+                return (*this);
+            if(current->nil == 1)
+            {
+                Pt tmp = (*current->root);
+                tmp = tmp->min();
+                // std::cout << tmp->val.first << '\n';
+                current = tmp;
+                return (*this);
+            }
+            current = current->successor();
+		    return ( *this ) ;
+	    }
+
+
+        Myt operator--( int )
+        {
+            Pt temp = current ;
+            operator--();
+            return Myt( temp ) ;
+        }
+        
+        bool    operator== (const Myt& x) throw() { return this->current == x.current; }
+
+		bool    operator!= (const Myt& x) throw() { return this->current != x.current; }
+
+    };
+
+    template<class T, class D, class Pt, class Rt>
+    class rbt_const_reverse_it : public iterator<bidirectional_iterator_tag, T, D, Pt, Rt>
+    {
+        public:
+            Pt current;
+            Pt last;
+
+            typedef rbt_const_reverse_it<T, D, Pt, Rt> Myt;
+            typedef typename T::value_type  const * ptpair;
+            typedef typename T::value_type  const & refpair;
+        rbt_const_reverse_it(){};
+        explicit rbt_const_reverse_it(Pt P) : current(P)
+        {
+            if (!(current->empty()))
+            {
+                Pt tmp = (*current->root);
+                tmp = tmp->min();
+                last = tmp;
+            }
+            
+        };
+        rbt_const_reverse_it(const rbt_reverse_it<T, D, Pt, Rt> & X) : current(X.base())
+        {
+            if (!(current->empty()))
+            {
+                Pt tmp = (*current->root);
+                tmp = tmp->min();
+                last = tmp;
+            }
+        };
+
+        Myt     operator=(const Myt &other)
+        {
+            current = other.base();
+            return (*this);
+        }
+
+        Pt      base() const {return (current);}
+
+        refpair      operator*() const
+        {
+            return (current->val);
+        }
+
+        ptpair      operator->() const
+        {
+            return (&current->val);
+        }
+
+        Myt     operator++()
+        {
+            if (current->empty())
+                return (*this);
+            if (current == last)
+            {
+                current = (*current->nilp);
+                return (*this);
+            }
+            current = current->predecessor();
+            return (*this);
+        }
+
+        Myt operator++( int )
+        {
+		    Pt  temp = current ;
+		    operator++();
+		    return Myt( temp ) ;
+	    }
+
+        Myt &operator--( void )
+        {
+            if (current->empty())
+                return (*this);
             if(current->nil == 1)
             {
                 // std::cout << "fsd\n";

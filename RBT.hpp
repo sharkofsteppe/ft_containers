@@ -21,17 +21,26 @@ public:
     typedef size_t      size_type;
     typedef Compare     compare;
     typedef ft::rbtit<node, difference_type, pointer, reference> iterator;
+    typedef ft::rbt_const_it<node, difference_type, pointer, reference> const_iterator;
+
+
     typedef ft::rbt_reverse_it<node, difference_type, pointer, reference> reverse_iterator;
+    typedef ft::rbt_const_reverse_it<node, difference_type, pointer, reference> const_reverse_iterator;
+
 
 
     node *root;
     node *nil;
+    size_type count;
 
 
     RBT() 
     {   
         nil = new Node<value_type>();
         root = NULL;
+        nil->knowroot(&root, &nil);
+        count = 0;
+
     }
 
     void rotateLeft(node *x)
@@ -69,14 +78,30 @@ public:
     }
 
 
+      // void    swap_values(_RB_node<U>* node)
+        // {
+        //     // it looks really strange, but required if
+        //     // agrument is constant or doesn't have overloaded
+        //     // assignment operator
+        //     char    buffer[sizeof(value_type)];c
+        //     void*   this_ptr = reinterpret_cast<void *>(&this->_value);
+        //     void*   node_ptr = reinterpret_cast<void *>(&node->_value);
 
+        //     memcpy(buffer, this_ptr, sizeof(value_type));
+        //     memcpy(this_ptr, node_ptr, sizeof(value_type));
+        //     memcpy(node_ptr, buffer, sizeof(value_type));
+        // }
 
     void swapValues(node *u, node *v)
     {
-	    value_type temp;
-	    temp = u->val;
-	    u->val = v->val;
-	    v->val = temp;
+
+        char    buffer[sizeof(value_type)];
+        void    *this_ptr = reinterpret_cast<void *>(&v->val);
+        void    *node_ptr = reinterpret_cast<void *>(&u->val);
+	    
+	    memcpy(buffer, this_ptr, sizeof(value_type));
+            memcpy(this_ptr, node_ptr, sizeof(value_type));
+            memcpy(node_ptr, buffer, sizeof(value_type));
     }
 
 
@@ -130,7 +155,15 @@ public:
             }
         }
     }
-
+    node *successor(node *x)
+    {
+        node *temp = x;
+ 
+        while (temp->left != NULL)
+            temp = temp->left;
+ 
+        return temp;
+    }
     node *BSTreplace(node *x)
     {
         if (x->left != NULL && x->right != NULL)
@@ -144,6 +177,7 @@ public:
     }
     void    deleteNode(node *v)
     {
+
         node *u = BSTreplace(v);
 
         bool uvBlack = ((u == NULL || u->color == Black) && (v->color == Black));
@@ -151,7 +185,12 @@ public:
         if (u == NULL)/*u is NULL therefore v is leaf*/
         {
             if (v == root)
+            {
                root = NULL;/*v is root, making root NULL*/
+                delete v;
+                count -= 1;
+                return ;
+            }
             else
             {
                 if (uvBlack)/*u and v both Black*/
@@ -163,22 +202,37 @@ public:
                 }
             }
                 /*delete v from the tree*/
+            
             if (v->isOnLeft())
+            {
                 parent->left = NULL;
+
+            }
             else
                  parent->right = NULL;
+            
             delete v;
+            count -= 1;
             return;
         }
-        if (v->left == NULL or v->right == NULL)
+  
+
+        if (v->left == NULL || v->right == NULL)
         {
             /* v has 1 child*/
             if (v == root)
             {
+                // char    buffer[sizeof(value_type)];
+                void    *this_ptr = reinterpret_cast<void *>(&v->val);
+                void    *node_ptr = reinterpret_cast<void *>(&u->val);
+
                 /* v is root, assign the value of u to v, and delete u*/
-                v->val = u->val;
-                v->left = v->right = NULL;
+                memcpy(this_ptr, node_ptr, sizeof(value_type));
+                // v->val = u->val;
+                root->left =root->right = NULL;
                 delete u;
+                count -= 1;
+
             }
             else
             {
@@ -187,6 +241,8 @@ public:
                 else
                     parent->right = u;
                 delete v;
+                count -= 1;
+
                 u->parent = parent;
                 if (uvBlack)/* u and v both Black, fix double Black at u*/
                     fixDoubleBlack(u);
@@ -315,6 +371,7 @@ public:
 
         if (root == NULL)
         {
+            nil->knowroot(&root, &nil);
             return iterator(nil);
         }
 
@@ -325,11 +382,29 @@ public:
         }
         return (iterator(ret)); 
     }
+    const_iterator begin( void ) const //    typedef ft::treeit<node , Compare> iterator;
+    {
+
+        if (root == NULL)
+        {
+            // nil->knowroot(&root, &nil);
+            return const_iterator(nil);
+        }
+
+        node *ret = root;
+        while (ret->left)
+        {
+            ret = ret->left;
+        }
+        return (const_iterator(ret)); 
+    }
 
 	iterator end( void )
     {
         if (root == NULL)
+        {
             return (iterator(nil));
+        }
         // node *ret = root;
         
 
@@ -338,9 +413,25 @@ public:
         // ret = ret->right;
         return (iterator(nil)); 
     }
+    const_iterator end( void ) const
+    {
+        if (root == NULL)
+        {
+            return (const_iterator(nil));
+        }
+        // node *ret = root;
+        
+
+        // while (ret->right != NULL)
+        //     ret = ret->right;
+        // ret = ret->right;
+        return (const_iterator(nil)); 
+    }
+    
 
     reverse_iterator    rbegin(void)
     {
+
         if (root == NULL)
             return (reverse_iterator(nil));
         node *ret = root;
@@ -366,28 +457,40 @@ public:
     /*searches for given value*/
     /*if found returns the node (used for delete)*/
     /*else returns the last node while traversing (used in insert)*/
-    node *search(value_type n)
+    node *search(value_type n, int *flag)
     {
+
         node *temp = root;
         while (temp != NULL)
         {
-            if (n < temp->val)
+            if (n.first < temp->val.first)
             {
+               
                 if (temp->left == NULL)
-                    break;
+                {
+                    break ;
+                }
                 else
+                {
                     temp = temp->left;
+                }
             }
-            else if (n == temp->val)
+            else if (n.first == temp->val.first)
+            {
+                *flag = 1;
                 break;
+
+            }
             else
             {
                 if (temp->right == NULL)
-                    break;
+                    break ;
                 else
                     temp = temp->right;
             }
         }
+                    // std::cout <<"priv" << n.first << '\n';
+
         return temp;
     }
  
@@ -401,27 +504,25 @@ public:
     void insert(value_type n)
     {
        
-        
+        int flag = 0;
         node *newNode= new Node<value_type>(n);
-    // std::cout << std::addressof(nil->root)<< "Here\n";
         
         if (root == NULL)/*when root is NULL*/
         {
             /*simply insert value at root*/
             newNode->color = Black;
             root = newNode;
+            count += 1;
             root->knowroot(&root, &nil);
             // std::cout << std::addressof(root)<< "Here\n";
 
             nil->knowroot(&root, &nil);
             // std::cout << std::addressof(nil->root)<< "Here\n";
-
-
         }
         else
         {
-            node *temp = search(n);
-            if (temp->val == n)
+            node *temp = search(n, &flag);
+            if (temp->val.first == n.first)
             {
                 delete newNode;/*return if value already exists*/
                 return ;
@@ -430,16 +531,20 @@ public:
       /*where the value is to be inserted*/
       /*connect new node to correct node*/
             newNode->parent = temp;
- 
-            if (n < temp->val)
+
+            if (n.first < temp->val.first)
             {
                 temp->left = newNode;
+                count += 1;
+
                 newNode->knowroot(&root, &nil);
 
             }
             else
             {
                 temp->right = newNode;
+                count += 1;
+
                 newNode->knowroot(&root, &nil);
 
 
@@ -452,19 +557,30 @@ public:
   /*utility function that deletes the node with given value*/
     void deleteByVal(value_type n)
     {
+        int flag = 0;
         if (root == NULL)/*Tree is empty*/
             return;
-        node *v = search(n), *u;
-        std::cout << "HERE: "<< v->val<< "\n";
+        node *v = search(n, &flag), *u;
+        // std::cout << "HERE: "<< v->val<< "\n";
         if (v->val != n)
         {
-            std::cout << "No node found to delete with value:" << n << std::endl;
+            // std::cout << "No node found to delete with value:" << n << std::endl;
             return;
         }
         deleteNode(v);
     }
  
-
+    // void clear( void )
+    // {
+    //     iterator it = begin();
+    //     iterator it_e = end();
+    //     // while (it != it_e)
+    //     // {
+    //         deleteNode(it.base());
+            
+    //     // }
+    //     // deleteNode(it_e.base());
+    // }
 
   /*prints inorder of the tree*/
     void printInOrder()

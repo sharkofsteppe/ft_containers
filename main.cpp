@@ -15,104 +15,35 @@
 
 int main() {
  
-    ft::map<int, char> mappa;
-    for (size_t i = 1; i < 5; i++)
-    {
-        mappa.insert(ft::make_pair(i, i+33));
-    }
 
 
-    // ft::pair<int, char> s(1,'c');
-    // ft::pair<int, char> d(3,'d');
-    ft::map<int, char>::reverse_iterator it = mappa.rbegin();
-    
-        // std::cout << mappa.rend()->first << '\n';
+    std::map<int, long>    smap;
+    ft::map<int, long>     fmap;
 
-    ft::map<int, char>::reverse_iterator it_b = mappa.rend();
-            //  std::cout << it_b->first <<"begin" <<'\n';
-
-    while (it_b != it)
-    {
-    //     // --it;
-
-        // --it;
-        // --it;
-        // --it;
-        // --it;
-        // --it;
-
-        std::cout << it_b->first << '\n';
-        --it_b;
-        std::cout << it_b->first << '\n';
-
-        
+    for (std::map<int, long>::iterator i = smap.begin(); i != smap.end(); ++i)
+        i->second = 0;
 
 
+    for (ft::map<int, long>::iterator i = fmap.begin(); i != fmap.end(); ++i)
+        i->second = 0;
+
+    std::map<int, long>::iterator  s_it = smap.begin();
+    // s_it++; ++s_it; s_it--; --s_it;  // infinite
+    std::cout << "std: ";
+    if (s_it != smap.begin())
+        std::cout <<  "KO" << ' ' << std::endl;
+    else
+        std::cout <<  "OK" << ' ' << std::endl;
+
+    ft::map<int, long>::iterator  f_it = fmap.begin();
+    --f_it;
+    std::cout << "ft:  ";
+    std::cout << std::addressof(f_it) << '\n';
+    if (f_it != fmap.begin())
+        std::cout << "KO" << ' ' << std::endl;
+    else
+        std::cout << "OK" << ' ' << std::endl;
 
 
-    //     // std::cout << it->first << '\n';
-
-    }
-        // std::cout << it->first << '\n';
-
-
-    // // }
-    //     std::cout << it->first <<'\n';
-        // it++;
-
-        // std::cout << it->first <<'\n';
-
-
-    // ++it;
-    // std::cout << it->first <<'\n';
-    // it++;
-    // std::cout << it->first <<'\n';
-    // --it;
-    // std::cout << it->first <<'\n';
-
-
-
-
-
-
-
-    // s = d;
-
-
-    // std::cout<< s.first <<'\n';
-    // ft::map<int, char>::iterator it = mappa.begin();
-
-    // std::cout<< *(it). << '\n';
-
-    // std::cout<< it.node->val.first << '\n';
-   
-
-    
-
-// tree.insert(7);
-// tree.insert(3);
-// tree.insert(18);
-// tree.insert(10);
-// tree.insert(22);
-// tree.insert(8);
-// tree.insert(11);
-// tree.insert(26);
-// tree.insert(2);
-// tree.insert(6);
-// tree.insert(13);
-
-// tree.printInOrder();
-// tree.printLevelOrder();
-
-// std::cout<<std::endl<<"Deleting 18, 11, 3, 10, 22"<<std::endl;
-
-// tree.deleteByVal(18);
-// tree.deleteByVal(11);
-// tree.deleteByVal(3);
-// tree.deleteByVal(10);
-// tree.deleteByVal(22);
-
-// tree.printInOrder(); 
-// tree.printLevelOrder();
 return 0;
 }

@@ -19,7 +19,7 @@ namespace       ft
 
         pair    &operator=(const pair &other)
         {
-            this->first = other.first;
+            this->first     = other.first;
             this->second = other.second;
             return (*this);
         }
