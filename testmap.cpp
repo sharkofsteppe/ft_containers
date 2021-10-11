@@ -2285,7 +2285,7 @@ void    ft_map_tests()
    
 
     // std::cout << B_CYAN "   Modifiers   " DEFAULT << std::endl;
-    // test_map_clear();
+    test_map_clear();
     // test_map_insert_1();
     // test_map_insert_2();
     // test_map_insert_3();

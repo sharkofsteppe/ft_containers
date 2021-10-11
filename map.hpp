@@ -170,23 +170,13 @@ namespace       ft
                 return ;
             }
 	
-            // iterator insert (iterator position, const value_type& val)
-            // {
-            //     rbt.insert(val);
-            // }
+           iterator insert (iterator position, const value_type& val)
+           {
+               
+           }
 	
-            // template <class InputIterator>
-            // void insert (InputIterator first, InputIterator last)
-            // {
-                
-            //     while (first != last)
-            //     {
-            //         rbt.insert(*first);
-            //         first++;
-            //     }
-            // }
-            template< class InputIt >
-            typename ft::enable_if< !std::is_integral<InputIt>::value, void >::type insert(InputIt first, InputIt last)
+            template <class InputIterator>
+            void insert (InputIterator first, InputIterator last)
             {
                 while (first != last)
                 {
@@ -194,6 +184,13 @@ namespace       ft
                     first++;
                 }
             }
+            pair<iterator,bool> insert (const value_type& val)
+            {
+
+            }
+
+
+
             void erase (iterator position)
             {
                 rbt.deleteNode(position.base());
@@ -219,17 +216,11 @@ namespace       ft
                 ft::stack<node_type *> storage;
                 while (ft != lt)
                 {
-                    if (ft == lt)
-                        break ;
-                    std::cout << ft.base()->val.second << '\n';
-                        storage.push(ft.base());
-                    ++ft;
-                    
+                    storage.push(ft.base());
+                    ++ft;   
                 }
 			    while (!storage.empty())
                 {
-                    std::cout << storage.top()->val.second << '\n';
-
 				    rbt.deleteNode(storage.top());
 				    storage.pop();
 			    }

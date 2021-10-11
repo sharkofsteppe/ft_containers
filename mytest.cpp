@@ -1108,10 +1108,8 @@ void    test_map_clear(void)
         std::map<int, long>    smap(svec.begin(), svec.end());
         ft::map<int, long>     fmap(fvec.begin(), fvec.end());
 
-
         smap.clear();
         fmap.clear();
-        std::cout << "hello \n";
 
         if (smap.size() == fmap.size())
             std::cout << GREEN "OK" DEFAULT << ' ' << std::flush;
@@ -1129,8 +1127,6 @@ void    test_map_clear(void)
         std::map<int, long>    smap(svec.begin(), svec.end());
         ft::map<int, long>     fmap(fvec.begin(), fvec.end());
 
-        print_map(smap);
-        print_map(fmap);
         smap.clear();
         fmap.clear();
 
@@ -1142,26 +1138,116 @@ void    test_map_clear(void)
         stress_test(smap, fmap);
         compare_maps(smap, fmap);
     }
-    // {
-    //     std::vector<std::pair<int, long> >  svec;
-    //     ft::vector<ft::pair<int, long> >    fvec;
-    //     value_generator(15, svec, fvec);
+    {
+        std::vector<std::pair<int, long> >  svec;
+        ft::vector<ft::pair<int, long> >    fvec;
+        value_generator(15, svec, fvec);
 
-    //     std::map<int, long>    smap(svec.begin(), svec.end());
-    //     ft::map<int, long>     fmap(fvec.begin(), fvec.end());
+        std::map<int, long>    smap(svec.begin(), svec.end());
+        ft::map<int, long>     fmap(fvec.begin(), fvec.end());
 
-    //     smap.clear();
-    //     fmap.clear();
+        smap.clear();
+        fmap.clear();
 
-    //     if (smap.size() == fmap.size())
-    //         std::cout << GREEN "OK" DEFAULT << ' ' << std::flush;
-    //     else
-    //         std::cout << RED "KO" DEFAULT << ' ' << std::flush;
-    //     std::cout << std::endl;
-    //     stress_test(smap, fmap);
-    //     compare_maps(smap, fmap);
-    // }
+        if (smap.size() == fmap.size())
+            std::cout << GREEN "OK" DEFAULT << ' ' << std::flush;
+        else
+            std::cout << RED "KO" DEFAULT << ' ' << std::flush;
+        std::cout << std::endl;
+        stress_test(smap, fmap);
+        compare_maps(smap, fmap);
+    }
 }
+
+void    test_map_insert_1(void)
+{
+    std::cout << YELLOW "2.1) insert [pair]:" DEFAULT << std::endl;
+
+    std::map<int, long>    smap;
+    ft::map<int, long>     fmap;
+
+    compare_maps(smap, fmap);
+
+    if (smap.insert(std::make_pair(15, 3)).second !=
+    fmap.insert(ft::make_pair(15, 3)).second)
+        std::cout << RED "KO" DEFAULT << ' ' << std::flush;
+
+    compare_maps(smap, fmap);
+
+    if (smap.insert(std::make_pair(3, 5)).second !=
+    fmap.insert(ft::make_pair(3, 5)).second)
+        std::cout << RED "KO" DEFAULT << ' ' << std::flush;
+
+    compare_maps(smap, fmap);
+
+    if (smap.insert(std::make_pair(-100, 7)).second !=
+    fmap.insert(ft::make_pair(-100, 7)).second)
+        std::cout << RED "KO" DEFAULT << ' ' << std::flush;
+
+    compare_maps(smap, fmap);
+
+    if (smap.insert(std::make_pair(-1000, 9)).second != fmap.insert(ft::make_pair(-1000, 9)).second)
+        std::cout << RED "KO" DEFAULT << ' ' << std::flush;
+
+    stress_test(smap, fmap);
+    compare_maps(smap, fmap);
+}
+
+void    test_map_insert_2(void)
+{
+    std::cout << YELLOW "2.2) insert [pair with hint]:" DEFAULT << std::endl;
+
+    std::vector<std::pair<int, long> >  svec;
+    ft::vector<ft::pair<int, long> >    fvec;
+    value_generator(5, svec, fvec);
+
+    std::map<int, long>    smap(svec.begin(), svec.end());
+    ft::map<int, long>     fmap(fvec.begin(), fvec.end());
+
+    compare_maps(smap, fmap);
+
+    smap.insert(smap.begin(), std::make_pair(15, 999));
+    fmap.insert(fmap.begin(), ft::make_pair(15, 999));
+
+    compare_maps(smap, fmap);
+
+    smap.insert(smap.end(), std::make_pair(10, 1000));
+    fmap.insert(fmap.end(), ft::make_pair(10, 1000));
+
+    stress_test(smap, fmap);
+    compare_maps(smap, fmap);
+}
+
+void    test_map_insert_3(void)
+{
+    std::cout << YELLOW "2.3) insert [pairs by range]:" DEFAULT << std::endl;
+
+    std::vector<std::pair<int, long> >  svec1;
+    ft::vector<ft::pair<int, long> >    fvec1;
+    value_generator(5, svec1, fvec1);
+
+    std::vector<std::pair<int, long> >  svec2;
+    ft::vector<ft::pair<int, long> >    fvec2;
+    value_generator(10, svec2, fvec2);
+
+    std::map<int, long>    smap;
+    ft::map<int, long>     fmap;
+
+    compare_maps(smap, fmap);
+
+    smap.insert(svec1.begin(), svec1.end());
+    fmap.insert(fvec1.begin(), fvec1.end());
+
+    compare_maps(smap, fmap);
+
+    smap.insert(svec2.begin(), svec2.end());
+    fmap.insert(fvec2.begin(), fvec2.end());
+
+    stress_test(smap, fmap);
+    compare_maps(smap, fmap);
+}
+
+
 void    test_map_erase_1(void)
 {
     std::cout << YELLOW "3.1) erase [by iterator]:" DEFAULT << std::endl;
@@ -1183,10 +1269,6 @@ void    test_map_erase_1(void)
     fmap.erase(++fmap.begin());
 
     compare_maps(smap, fmap);
-
-    // smap.erase(++smap.end());
-    // fmap.erase(++fmap.end());
-
     compare_maps(smap, fmap);
 
     smap.erase(++(++(++smap.begin())));
@@ -1267,60 +1349,60 @@ void    test_map_erase_3(void)
 int main()
 {
     std::cout << B_RED "[   FT_MAP   ]" DEFAULT << '\n' << std::endl;
-    // std::cout << B_CYAN "   Constructors   " DEFAULT << std::endl;
+    std::cout << B_CYAN "   Constructors   " DEFAULT << std::endl;
 
-    // test_map_constructor_1_1();
-    // test_map_constructor_1_2();
+    test_map_constructor_1_1();
+    test_map_constructor_1_2();
 
-    // test_map_constructor_2_1();
-    // test_map_constructor_2_2();
+    test_map_constructor_2_1();
+    test_map_constructor_2_2();
 
-    // test_map_constructor_3_1();
-    // test_map_constructor_3_2();
+    test_map_constructor_3_1();
+    test_map_constructor_3_2();
 
-    // test_map_constructor_5_1();
-    // test_map_constructor_5_2();
-    // test_map_constructor_5_3();
-    // test_map_constructor_5_4();
+    test_map_constructor_5_1();
+    test_map_constructor_5_2();
+    test_map_constructor_5_3();
+    test_map_constructor_5_4();
 
-    //  std::cout << B_CYAN "   Capacity   " DEFAULT << std::endl;
-    // test_map_capacity_1();
-    // test_map_capacity_2();
+     std::cout << B_CYAN "   Capacity   " DEFAULT << std::endl;
+    test_map_capacity_1();
+    test_map_capacity_2();
 
-    // std::cout << B_CYAN "   Iterators   " DEFAULT << std::endl;
-    // test_map_iterators_1_1();
-    // test_map_iterators_1_2();
-    // test_map_iterators_2_1();
-    // test_map_iterators_2_2();
-    // test_map_iterators_3();
+    std::cout << B_CYAN "   Iterators   " DEFAULT << std::endl;
+    test_map_iterators_1_1();
+    test_map_iterators_1_2();
+    test_map_iterators_2_1();
+    test_map_iterators_2_2();
+    test_map_iterators_3();
 
-    // std::cout << B_CYAN "   Reverse iterators   " DEFAULT << std::endl;
-    // test_map_rev_iterators_1_1();
-    // test_map_rev_iterators_1_2();
-    // test_map_rev_iterators_2_1();
-    // test_map_rev_iterators_2_2();
-    // test_map_rev_iterators_3();
+    std::cout << B_CYAN "   Reverse iterators   " DEFAULT << std::endl;
+    test_map_rev_iterators_1_1();
+    test_map_rev_iterators_1_2();
+    test_map_rev_iterators_2_1();
+    test_map_rev_iterators_2_2();
+    test_map_rev_iterators_3();
 
-    //     std::cout << B_CYAN "   Assignments   " DEFAULT << std::endl;
-    // test_map_assignment_1_1();
-    // test_map_assignment_1_2();
+        std::cout << B_CYAN "   Assignments   " DEFAULT << std::endl;
+    test_map_assignment_1_1();
+    test_map_assignment_1_2();
 
-    // std::cout << B_CYAN "   Get allocator   " DEFAULT << std::endl;
-    // test_map_get_allocator();
+    std::cout << B_CYAN "   Get allocator   " DEFAULT << std::endl;
+    test_map_get_allocator();
 
-    // std::cout << B_CYAN "   Element access   " DEFAULT << std::endl;
-    // test_map_access_1_1();
-    // test_map_access_1_2();
-    // test_map_access_2();
+    std::cout << B_CYAN "   Element access   " DEFAULT << std::endl;
+    test_map_access_1_1();
+    test_map_access_1_2();
+    test_map_access_2();
 
 
         std::cout << B_CYAN "   Modifiers   " DEFAULT << std::endl;
     test_map_clear();
-    // test_map_erase_1();
-    // test_map_erase_2();
-    // test_map_erase_3();
-    // test_map_insert_1();
-    // test_map_insert_2();
-    // test_map_insert_3();
+    test_map_erase_1();
+    test_map_erase_2();
+    test_map_erase_3();
+    test_map_insert_1();
+    test_map_insert_2();
+    test_map_insert_3();
     return (0);
 }

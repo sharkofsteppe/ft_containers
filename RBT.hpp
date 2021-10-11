@@ -94,14 +94,14 @@ public:
 
     void swapValues(node *u, node *v)
     {
-
+        std::cout << "print\n";
         char    buffer[sizeof(value_type)];
         void    *this_ptr = reinterpret_cast<void *>(&v->val);
         void    *node_ptr = reinterpret_cast<void *>(&u->val);
 	    
 	    memcpy(buffer, this_ptr, sizeof(value_type));
-            memcpy(this_ptr, node_ptr, sizeof(value_type));
-            memcpy(node_ptr, buffer, sizeof(value_type));
+        memcpy(this_ptr, node_ptr, sizeof(value_type));
+        memcpy(node_ptr, buffer, sizeof(value_type));
     }
 
 
@@ -167,13 +167,26 @@ public:
     node *BSTreplace(node *x)
     {
         if (x->left != NULL && x->right != NULL)
+        {
+
             return (successor(x->right));
+
+        }
         if (x->left == NULL && x->right == NULL)
+        {
             return (NULL);
+            
+        }
         if (x->left != NULL)
+        {
             return (x->left);
+
+        }
         else
+        {
+
             return (x->right);
+        }
     }
     void    deleteNode(node *v)
     {
@@ -223,14 +236,18 @@ public:
             if (v == root)
             {
                 // char    buffer[sizeof(value_type)];
-                void    *this_ptr = reinterpret_cast<void *>(&v->val);
-                void    *node_ptr = reinterpret_cast<void *>(&u->val);
+                // void    *this_ptr = reinterpret_cast<void *>(&v->val);
+                // void    *node_ptr = reinterpret_cast<void *>(&u->val);
 
                 /* v is root, assign the value of u to v, and delete u*/
-                memcpy(this_ptr, node_ptr, sizeof(value_type));
+                // memcpy(this_ptr, node_ptr, sizeof(value_type));
                 // v->val = u->val;
-                root->left =root->right = NULL;
-                delete u;
+                
+                delete v;
+                v = NULL;
+                root = u;
+                u->left = NULL;
+                u->right = NULL;
                 count -= 1;
 
             }
